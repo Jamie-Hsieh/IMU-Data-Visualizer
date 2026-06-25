@@ -103,13 +103,24 @@ def create_vehicle_3d(slope_deg, roll_deg):
 
 DT = 0.01
 
+# -----------------------------
+# Upload CSV instead of hardcoding
+# -----------------------------
+st.subheader("Upload CSV")
+
+uploaded_file = st.file_uploader("Upload your IMU CSV file", type=["csv"])
+
+if uploaded_file is None:
+    st.info("Please upload a CSV file to begin.")
+    st.stop()
+
 @st.cache_data
-def load_data():
-    df = pd.read_csv("jan7combine.csv")
+def load_data(file):
+    df = pd.read_csv(file)
     df = df.sort_values("TimeBucket").reset_index(drop=True)
     return df
 
-df = load_data()
+df = load_data(uploaded_file)
 
 st.title("IMU Gravity & Vehicle Visualizer")
 
@@ -169,9 +180,9 @@ z_axis = g_ref / np.linalg.norm(g_ref)
 st.subheader("Forward Direction")
 
 f1, f2, f3 = st.columns(3)
-with f1: f_x = st.number_input("Forward X", value=1.0)
-with f2: f_y = st.number_input("Forward Y", value=0.0)
-with f3: f_z = st.number_input("Forward Z", value=0.0)
+with f1: f_x = st.number_input("Forward X", value=-0.2601875)
+with f2: f_y = st.number_input("Forward Y", value=0.248125)
+with f3: f_z = st.number_input("Forward Z", value=-0.232625)
 
 f_input = np.array([f_x, f_y, f_z])
 f_unit = f_input / np.linalg.norm(f_input)
